@@ -18,7 +18,7 @@ public class Brouillimg {
         
         // Masque 0x7FFF pour garantir que la clé ne dépasse pas les 15 bits
 
-        int key = Integer.parseInt(args[1]) & 0x7FFF;
+        int key = Integer.parseInt(args[1]) & 0x7FFF; 
         BufferedImage inputImage = ImageIO.read(new File(inPath));
         
         if (inputImage == null) {
@@ -127,13 +127,21 @@ public class Brouillimg {
      * @param size nombre total de lignes dans l'image
      * 
      * @param key  clé de brouillage (15 bits)
-     * 
+     *
      * @return indice de la ligne dans l'image brouillée (0..size-1)
      * 
      */
 
     public static int scrambledId(int id, int size, int key) {
-        return id;
+        
+        // valeur binaire de la clé en &(et logique = multiplication binaire) avec 0x7F = 01111111 
+        // => conserve les 7 dernier bits
+        int s = key & 0x7F; 
+        
+        // >> décalage de 7 bit vers la droite pour conserver les 8 premiers bits de poids fort
+        int r = key >> 7;
+        
+        return (r+(2*s+1)*id)%size;
 
     }
 
