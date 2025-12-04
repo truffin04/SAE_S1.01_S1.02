@@ -1,10 +1,7 @@
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.IntStream;
+import javax.imageio.ImageIO;
 public class Brouillimg {
 
     public static void main(String[] args) throws IOException {
@@ -133,7 +130,9 @@ public class Brouillimg {
      */
 
     public static int scrambledId(int id, int size, int key) {
-        return id;
+        int s = key & 0x7F;
+        int r = key >>7;
+        return (r+(2*s+1)*id);
 
     }
 
