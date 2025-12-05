@@ -2,6 +2,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
 public class Brouillimg {
 
     public static void main(String[] args) throws IOException {
@@ -12,12 +13,12 @@ public class Brouillimg {
 
         String inPath = args[0];
         String outPath = (args.length >= 3) ? args[2] : "out.png";
-        
+
         // Masque 0x7FFF pour garantir que la clé ne dépasse pas les 15 bits
 
-        int key = Integer.parseInt(args[1]) & 0x7FFF; 
+        int key = Integer.parseInt(args[1]) & 0x7FFF;
         BufferedImage inputImage = ImageIO.read(new File(inPath));
-        
+
         if (inputImage == null) {
             throw new IOException("Format d’image non reconnu: " + inPath);
         }
@@ -84,7 +85,7 @@ public class Brouillimg {
     public static int[] generatePermutation(int size, int key) {
         int[] scrambleTable = new int[size];
 
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             scrambleTable[i] = i;
             scrambleTable[i] = scrambledId(key, size, key);
         }
@@ -104,21 +105,31 @@ public class Brouillimg {
      * 
      */
 
-public static BufferedImage scrambleLines(BufferedImage inputImg, int[] perm){
+    public static BufferedImage scrambleLines(BufferedImage inputImg, int[] perm) {
         int width = inputImg.getWidth();
         int height = inputImg.getHeight();
-        if (perm.length != height) throw new IllegalArgumentException("Taille d'image <> taille permutation");
 
+        // Vérifie que la taille de la permutation correspond à la hauteur de l'image
+        if (perm.length != height) {
+            throw new IllegalArgumentException("Taille d'image <> taille permutation");
+        }
+
+        // Crée une nouvelle image de sortie
         BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        for (int y = 0; y < height; y++) { //on parcours chaque ligne de l'image de sortie
-            int srcY = perm[y];  // position de la ligne y dans l'image brouillée
-            for (int x = 0; x < width; x++) { //on parcours chaque pixel de la ligne
-                int rgb = inputImg.getRGB(x, srcY); //on récupère la couleur du pixel dans l'image d'entrée
-                out.setRGB(x, y, rgb); //on place la couleur dans l'image de sortie
+        // Pour chaque ligne de l'image de sortie
+        for (int y = 0; y < height; y++) {
+            int srcY = perm[y]; // Ligne source à copier
+            // Pour chaque pixel de la ligne
+            for (int x = 0; x < width; x++) {
+                // Récupère le pixel de l'image d'entrée
+                int pixel = inputImg.getRGB(x, srcY);
+                // Écrit le pixel dans l'image de sortie
+                out.setRGB(x, y, pixel);
             }
         }
 
+        // Retourne l'image de sortie
         return out;
     }
 
@@ -137,15 +148,17 @@ public static BufferedImage scrambleLines(BufferedImage inputImg, int[] perm){
      */
 
     public static int scrambledId(int id, int size, int key) {
-        
-        // valeur binaire de la clé en &(et logique = multiplication binaire) avec 0x7F = 01111111 
+
+        // valeur binaire de la clé en &(et logique = multiplication binaire) avec 0x7F
+        // = 01111111
         // => conserve les 7 dernier bits
-        int s = key & 0x7F; 
-        
-        // >> décalage de 7 bit vers la droite pour conserver les 8 premiers bits de poids fort
+        int s = key & 0x7F;
+
+        // >> décalage de 7 bit vers la droite pour conserver les 8 premiers bits de
+        // poids fort
         int r = key >> 7;
-        
-        return (r+(2*s+1)*id)%size;
+
+        return (r + (2 * s + 1) * id) % size;
 
     }
 
