@@ -83,9 +83,11 @@ public class Brouillimg {
 
     public static int[] generatePermutation(int size, int key) {
         int[] scrambleTable = new int[size];
-        
+
         for (int i = 0; i < size; i++)
             scrambleTable[i] = i;
+            scrambleTable[i] = scrambledId(key, size, key);
+        }
         return scrambleTable;
 
     }
