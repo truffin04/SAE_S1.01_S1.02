@@ -1,10 +1,7 @@
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.IntStream;
+import javax.imageio.ImageIO;
 public class Brouillimg {
 
     public static void main(String[] args) throws IOException {
@@ -86,7 +83,7 @@ public class Brouillimg {
 
     public static int[] generatePermutation(int size, int key) {
         int[] scrambleTable = new int[size];
-
+        
         for (int i = 0; i < size; i++)
             scrambleTable[i] = i;
         return scrambleTable;
