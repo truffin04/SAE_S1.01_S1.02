@@ -151,7 +151,7 @@ public class Brouillimg {
 
         // valeur binaire de la clé en &(et logique = multiplication binaire) avec 0x7F
         // = 01111111
-        // => conserve les 7 dernier bits
+        // => conserve les 7 dernier bits   
         int s = key & 0x7F;
 
         // >> décalage de 7 bit vers la droite pour conserver les 8 premiers bits de
