@@ -87,7 +87,7 @@ public class Brouillimg {
 
         for (int i = 0; i < size; i++) {
             scrambleTable[i] = i;
-            scrambleTable[i] = scrambledId(key, size, key);
+            scrambleTable[i] = scrambledId(i, size, key);
         }
         return scrambleTable;
 
