@@ -7,7 +7,7 @@ public class Brouillimg {
 
     public static void main(String[] args) throws IOException {
         if (args.length < 3) {
-            System.err.println("Usage: java Brouillimg <image_claire> <clé> [image_sortie] <processus(scramble/unscramble)>");
+            System.err.println("Usage: java Brouillimg <image_claire> <clé> <processus(scramble/unscramble) [image_sortie] >");
             System.exit(1);
         }
 
