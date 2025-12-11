@@ -6,13 +6,17 @@ import javax.imageio.ImageIO;
 public class Brouillimg {
 
     public static void main(String[] args) throws IOException {
-        if (args.length < 2) {
-            System.err.println("Usage: java Brouillimg <image_claire> <clé> [image_sortie]");
+        if (args.length < 3) {
+            System.err.println("Usage: java Brouillimg <image_claire> <clé> [image_sortie] <processus(scramble/unscramble)>");
             System.exit(1);
         }
 
         String inPath = args[0];
-        String outPath = (args.length >= 3) ? args[2] : "out.png";
+        //si on passe 3 ou + arguments à la fonction
+        String outPath = (args.length >= 4) ? args[3] : "out.png";
+
+        String processus = args[2];
+
 
         // Masque 0x7FFF pour garantir que la clé ne dépasse pas les 15 bits
 
@@ -29,11 +33,17 @@ public class Brouillimg {
 
         // Pré‑calcul des lignes en niveaux de gris pour accélérer le calcul du critère
 
-        int[][] inputImageGL = rgb2gl(inputImage);
-        int[] perm = generatePermutation(height, key);
-        BufferedImage scrambledImage = scrambleLines(inputImage, perm);
-        ImageIO.write(scrambledImage, "png", new File(outPath));
-        System.out.println("Image écrite: " + outPath);
+        if(processus.equals("scramble")){
+            int[][] inputImageGL = rgb2gl(inputImage);
+            int[] perm = generatePermutation(height, key);
+            BufferedImage scrambledImage = scrambleLines(inputImage, perm);
+            ImageIO.write(scrambledImage, "png", new File(outPath));
+            System.out.println("Image écrite: " + outPath);
+        }
+
+        if(processus.equals("unscramble")){
+            System.out.println("unscramble");
+        }
 
     }
 
