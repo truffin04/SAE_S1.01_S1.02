@@ -43,6 +43,11 @@ public class Brouillimg {
 
         if(processus.equals("unscramble")){
             System.out.println("unscramble");
+            int[][] inputImageGL = rgb2gl(inputImage);
+            int[] perm = generatePermutation(height, key);
+            BufferedImage scrambledImage = unScrambleLines(inputImage, perm);
+            ImageIO.write(scrambledImage, "png", new File(outPath));
+            System.out.println("Image écrite: " + outPath);
         }
 
     }
@@ -96,7 +101,6 @@ public class Brouillimg {
         int[] scrambleTable = new int[size];
 
         for (int i = 0; i < size; i++) {
-            scrambleTable[i] = i;
             scrambleTable[i] = scrambledId(i, size, key);
         }
         return scrambleTable;
@@ -125,7 +129,14 @@ public class Brouillimg {
 
         BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        // code décrypte image 
+        for (int y = 0; y < height; y++) {
+            int srcY = perm[y];
+            for (int x = 0; x < width; x++) {
+                int pixel = inputImg.getRGB(x, srcY);
+                out.setRGB(x, y, pixel);
+            }
+        }
+
         return out;
     }
 
@@ -147,9 +158,9 @@ public class Brouillimg {
             // Pour chaque pixel de la ligne
             for (int x = 0; x < width; x++) {
                 // Récupère le pixel de l'image d'entrée
-                int pixel = inputImg.getRGB(x, srcY);
+                int pixel = inputImg.getRGB(x, y);
                 // Écrit le pixel dans l'image de sortie
-                out.setRGB(x, y, pixel);
+                out.setRGB(x, srcY, pixel);
             }
         }
 
