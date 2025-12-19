@@ -154,13 +154,13 @@ public class Brouillimg {
 
         // Pour chaque ligne de l'image de sortie
         for (int y = 0; y < height; y++) {
-            int srcY = perm[y]; // Ligne source à copier
+            int destY = perm[y]; // Position de destination dans l'image brouillée
             // Pour chaque pixel de la ligne
             for (int x = 0; x < width; x++) {
                 // Récupère le pixel de l'image d'entrée
                 int pixel = inputImg.getRGB(x, y);
                 // Écrit le pixel dans l'image de sortie
-                out.setRGB(x, srcY, pixel);
+                out.setRGB(x, destY, pixel);
             }
         }
 
