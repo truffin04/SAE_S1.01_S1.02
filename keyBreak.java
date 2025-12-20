@@ -7,8 +7,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-public class cassagePearson {
+public class keyBreak {
 
+    /**
+     * Convertit une image RGB en niveaux de gris (GL).
+     */
     public static int[][] rgb2gl(BufferedImage inputRGB) {
         final int height = inputRGB.getHeight();
         final int width = inputRGB.getWidth();
@@ -27,13 +30,12 @@ public class cassagePearson {
     }
 
     /** 
-     * 
-     * 
      * ===== Corrélation de Pearson =====
-     * 
-     * 
-    */
+     */
 
+    /**
+     * Calcule la corrélation de Pearson entre deux lignes.
+     */
     public static double pearsonCorrelation(int[] line1, int[] line2) {
         if (line1.length != line2.length || line1.length == 0) {
             return 0;
@@ -68,6 +70,9 @@ public class cassagePearson {
         return numerateur / (denominateurX * denominateurY);
     }
 
+    /**
+     * Calcule le score de Pearson moyen pour une image.
+     */
     public static double scorePearson(int[][] image) {
         double score = 0;
         int count = 0;
@@ -79,6 +84,9 @@ public class cassagePearson {
         return count > 0 ? score / count : 0;
     }
 
+    /**
+     * Génère une permutation des entiers 0..size-1 en fonction d'une clé.
+     */
     public static int[] generatePermutation(int size, int key) {
         int[] scrambleTable = new int[size];
         for (int i = 0; i < size; i++) {
@@ -88,22 +96,8 @@ public class cassagePearson {
     }
 
     /**
-     * Génère la permutation INVERSE pour le débrouillage
-     * Si lors du brouillage: ligne i → position perm[i]
-     * Alors pour débrouiller: la ligne à position perm[i] doit revenir en i
-     * Donc: inversePerm[perm[i]] = i
+     * Renvoie la position de la ligne id dans l'image brouillée.
      */
-    public static int[] generateInversePermutation(int size, int key) {
-        int[] perm = generatePermutation(size, key);
-        int[] inversePerm = new int[size];
-        
-        for (int i = 0; i < size; i++) {
-            inversePerm[perm[i]] = i;
-        }
-        
-        return inversePerm;
-    }
-
     public static int scrambledId(int id, int size, int key) {
         int s = key & 0x7F;
         int r = key >> 7;
@@ -111,23 +105,8 @@ public class cassagePearson {
     }
 
     /**
-     * Débrouille une image brouillée
-     * L'image brouillée a la ligne originale i à la position perm[i]
-     * Pour reconstruire: on lit à position perm[i] et on écrit à i
+     * Débrouille les lignes d'une image selon une permutation.
      */
-    public static int[][] unScrambleMatrix(int[][] scrambledMatrix, int[] perm) {
-        int height = scrambledMatrix.length;
-        int width = scrambledMatrix[0].length;
-        int[][] unscrambled = new int[height][width];
-        
-        for (int i = 0; i < height; i++) {
-            // La ligne originale i se trouve à la position perm[i] dans l'image brouillée
-            unscrambled[i] = scrambledMatrix[perm[i]].clone();
-        }
-        
-        return unscrambled;
-    }
-
     public static BufferedImage unScrambleLines(BufferedImage inputImg, int[] perm) {
         int width = inputImg.getWidth();
         int height = inputImg.getHeight();
@@ -137,7 +116,6 @@ public class cassagePearson {
         BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         
         for (int y = 0; y < height; y++) {
-            // Pour reconstruire la ligne y originale, on la prend à la position perm[y]
             int srcY = perm[y];
             for (int x = 0; x < width; x++) {
                 int pixel = inputImg.getRGB(x, srcY);
@@ -171,13 +149,10 @@ public class cassagePearson {
         System.out.println("Méthode: Corrélation de Pearson");
         System.out.println("Test de 32768 clés...\n");
 
-        // 1. Convertir une seule fois l'image brouillée en niveaux de gris
         int[][] scrambledMatrix = rgb2gl(scrambledImage);
 
-        // 2. Essayer toutes les clés possibles
         for (int key = 0; key < 32768; key++) {
             int[] perm = generatePermutation(height, key);
-            // Permuter les lignes de la matrice de gris
             int[][] unscrambledMatrix = permuteLines(scrambledMatrix, perm);
             double score = scorePearson(unscrambledMatrix);
 
@@ -187,7 +162,6 @@ public class cassagePearson {
                 System.out.println("Nouvelle meilleure clé: " + maxKey + " (score: " + String.format("%.6f", maxScore) + ")");
             }
 
-            // Affichage de progression
             if (key % 4000 == 0 && key > 0) {
                 System.out.println("Progression: " + key + "/32768");
             }
@@ -198,13 +172,12 @@ public class cassagePearson {
     }
 
     /** 
-     * 
-     * 
      * ===== Distance Euclidienne =====
-     * 
-     * 
-    */
+     */
 
+    /**
+     * Calcule la distance euclidienne entre deux lignes.
+     */
     public static double euclideanDistance(int[] x, int[] y) {
         if (x.length != y.length) {
             throw new IllegalArgumentException("les lignes doivent avoir la même taille");
@@ -218,6 +191,9 @@ public class cassagePearson {
         return Math.sqrt(sum);
     }
 
+    /**
+     * Calcule le score euclidien total pour une image.
+     */
     public static double scoreEuclidean(int[][] imageGL) {
         int height = imageGL.length;
         if (height < 2) {
@@ -245,7 +221,6 @@ public class cassagePearson {
         System.out.println("Méthode: Distance Euclidienne");
         System.out.println("Test de 32768 clés...\n");
 
-        // Convertir l'image en niveaux de gris
         int[][] encryptedImageGL = rgb2gl(scrambledImage);
 
         for (int key = 0; key < 32768; key++) {
@@ -253,14 +228,12 @@ public class cassagePearson {
             int[][] decryptedImageGL = permuteLines(encryptedImageGL, perm);
             double currentScore = scoreEuclidean(decryptedImageGL);
             
-            // Pour la distance euclidienne, un score plus PETIT est meilleur
             if (currentScore < bestScore) {
                 bestScore = currentScore;
                 bestKey = key;
                 System.out.println("Nouvelle meilleure clé: " + bestKey + " (score: " + String.format("%.2f", currentScore) + ")");
             }
 
-            // Affichage de progression
             if (key % 4000 == 0 && key > 0) {
                 System.out.println("Progression: " + key + "/32768");
             }
@@ -271,7 +244,6 @@ public class cassagePearson {
     }
 
     public static void main(String[] args) throws Exception {
-        // Vérification des arguments
         if (args.length < 2) {
             System.err.println("Usage: java cassagePearson <image_brouillée> <méthode>");
             System.err.println("  <méthode> peut être:");
@@ -283,7 +255,6 @@ public class cassagePearson {
         String imagePath = args[0];
         String method = args[1].toLowerCase();
 
-        // Charger l'image brouillée
         BufferedImage image = ImageIO.read(new File(imagePath));
         
         if (image == null) {
@@ -295,7 +266,6 @@ public class cassagePearson {
         System.out.println("Image: " + imagePath);
         System.out.println("Dimensions: " + image.getWidth() + "x" + image.getHeight() + "\n");
 
-        // Casser la clé selon la méthode choisie
         long startTime = System.currentTimeMillis();
         int bestKey;
 
@@ -318,7 +288,6 @@ public class cassagePearson {
         System.out.println("Meilleure clé trouvée: " + bestKey);
         System.out.println("Temps d'exécution: " + (endTime - startTime) + " ms");
 
-        // Débrouiller l'image avec la meilleure clé
         int height = image.getHeight();
         int[] perm = generatePermutation(height, bestKey);
         BufferedImage unscrambledImage = unScrambleLines(image, perm);
