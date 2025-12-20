@@ -1,3 +1,8 @@
+//  SAE S1.01-02
+//  Projet Java - Brouillage/Débrouillage d'image
+//  Auteur - Nathan Tutin , Tom Ruffin
+//  21/12/2025
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -154,7 +159,7 @@ public class Brouillimg {
 
         // Pour chaque ligne de l'image de sortie
         for (int y = 0; y < height; y++) {
-            int destY = perm[y]; // Position de destination dans l'image brouillée
+            int destY = perm[y]; // Ligne source à copier
             // Pour chaque pixel de la ligne
             for (int x = 0; x < width; x++) {
                 // Récupère le pixel de l'image d'entrée
