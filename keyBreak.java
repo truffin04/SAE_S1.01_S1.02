@@ -9,8 +9,7 @@ import javax.imageio.ImageIO;
 
 public class keyBreak {
 
-    
-    //Convertit une image RGB en niveaux de gris (GL).
+    // Convertit une image RGB en niveaux de gris (GL).
     public static int[][] rgb2gl(BufferedImage inputRGB) {
         final int height = inputRGB.getHeight();
         final int width = inputRGB.getWidth();
@@ -28,11 +27,7 @@ public class keyBreak {
         return outGL;
     }
 
-    /** 
-     * ===== Corrélation de Pearson =====
-     */
-
-    //Calcule la corrélation de Pearson entre deux lignes.
+    // Calcule la corrélation de Pearson entre deux lignes.
     public static double pearsonCorrelation(int[] line1, int[] line2) {
         if (line1.length != line2.length || line1.length == 0) {
             return 0;
@@ -42,7 +37,7 @@ public class keyBreak {
         double sumY = 0;
         double sumXY = 0;
         double sumX2 = 0;
-        double sumY2 = 0;   
+        double sumY2 = 0;
         int n = line1.length;
 
         for (int i = 0; i < n; i++) {
@@ -67,8 +62,7 @@ public class keyBreak {
         return numerateur / (denominateurX * denominateurY);
     }
 
-    
-    //Calcule le score de Pearson moyen pour une image.
+    // Calcule le score de Pearson moyen pour une image.
     public static double scorePearson(int[][] image) {
         double score = 0;
         int count = 0;
@@ -80,8 +74,7 @@ public class keyBreak {
         return count > 0 ? score / count : 0;
     }
 
-    
-    //Génère une permutation des entiers 0..size-1 en fonction d'une clé.
+    // Génère une permutation des entiers 0..size-1 en fonction d'une clé.
     public static int[] generatePermutation(int size, int key) {
         int[] scrambleTable = new int[size];
         for (int i = 0; i < size; i++) {
@@ -90,16 +83,14 @@ public class keyBreak {
         return scrambleTable;
     }
 
-    
-    //Renvoie la position de la ligne id dans l'image brouillée.
+    // Renvoie la position de la ligne id dans l'image brouillée.
     public static int scrambledId(int id, int size, int key) {
         int s = key & 0x7F;
         int r = key >> 7;
         return (r + (2 * s + 1) * id) % size;
     }
 
-    
-    //Débrouille les lignes d'une image selon une permutation.
+    // Débrouille les lignes d'une image selon une permutation.
     public static BufferedImage unScrambleLines(BufferedImage inputImg, int[] perm) {
         int width = inputImg.getWidth();
         int height = inputImg.getHeight();
@@ -107,7 +98,7 @@ public class keyBreak {
             throw new IllegalArgumentException("Taille d'image <> taille permutation");
         }
         BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        
+
         for (int y = 0; y < height; y++) {
             int srcY = perm[y];
             for (int x = 0; x < width; x++) {
@@ -118,9 +109,8 @@ public class keyBreak {
         return out;
     }
 
-    
-    //Permute les lignes d'une matrice de gris selon une permutation donnée.
-        public static int[][] permuteLines(int[][] matrix, int[] perm) {
+    // Permute les lignes d'une matrice de gris selon une permutation donnée.
+    public static int[][] permuteLines(int[][] matrix, int[] perm) {
         int height = matrix.length;
         int width = matrix[0].length;
         int[][] permutedMatrix = new int[height][width];
@@ -130,9 +120,8 @@ public class keyBreak {
         return permutedMatrix;
     }
 
-    
-    //Tente de casser la clé avec Pearson en essayant toutes les clés possibles.
-        public static int breakKeyPearson(BufferedImage scrambledImage) {
+    // Tente de casser la clé avec Pearson en essayant toutes les clés possibles.
+    public static int breakKeyPearson(BufferedImage scrambledImage) {
         int maxKey = 0;
         double maxScore = -Double.MAX_VALUE;
         int height = scrambledImage.getHeight();
@@ -162,11 +151,7 @@ public class keyBreak {
         return maxKey;
     }
 
-    /** 
-     * ===== Distance Euclidienne =====
-     */
-    
-    //Calcule la distance euclidienne entre deux lignes.
+    // Calcule la distance euclidienne entre deux lignes.
     public static double euclideanDistance(int[] x, int[] y) {
         if (x.length != y.length) {
             throw new IllegalArgumentException("les lignes doivent avoir la même taille");
@@ -180,8 +165,7 @@ public class keyBreak {
         return Math.sqrt(sum);
     }
 
-    
-    //Calcule le score euclidien total pour une image.
+    // Calcule le score euclidien total pour une image.
     public static double scoreEuclidean(int[][] imageGL) {
         int height = imageGL.length;
         if (height < 2) {
@@ -189,7 +173,7 @@ public class keyBreak {
         }
 
         double totalScore = 0.0;
-        
+
         for (int i = 0; i < height - 1; i++) {
             double distance = euclideanDistance(imageGL[i], imageGL[i + 1]);
             totalScore += distance;
@@ -198,8 +182,7 @@ public class keyBreak {
         return totalScore;
     }
 
-    
-    //Tente de casser la clé avec la distance euclidienne en essayant toutes les clés possibles.
+    // Tente de casser la clé avec la distance euclidienne en essayant toutes les clés possibles.
     public static int breakKeyEuclidean(BufferedImage scrambledImage) {
         int bestKey = 0;
         double bestScore = Double.POSITIVE_INFINITY;
@@ -214,7 +197,7 @@ public class keyBreak {
             int[] perm = generatePermutation(height, key);
             int[][] decryptedImageGL = permuteLines(encryptedImageGL, perm);
             double currentScore = scoreEuclidean(decryptedImageGL);
-            
+
             if (currentScore < bestScore) {
                 bestScore = currentScore;
                 bestKey = key;
@@ -243,7 +226,7 @@ public class keyBreak {
         String method = args[1].toLowerCase();
 
         BufferedImage image = ImageIO.read(new File(imagePath));
-        
+
         if (image == null) {
             System.err.println("Impossible de lire l'image: " + imagePath);
             System.exit(1);
@@ -253,15 +236,17 @@ public class keyBreak {
         System.out.println("Image: " + imagePath);
         System.out.println("Dimensions: " + image.getWidth() + "x" + image.getHeight() + "\n");
 
-        long startTime = System.currentTimeMillis();
+        double timeTaken;
         int bestKey;
 
         if (method.equals("pearson")) {
+            timeTaken = Profiler.analyse(() -> breakKeyPearson(image));
             bestKey = breakKeyPearson(image);
-        } 
+        }
         else if (method.equals("euclidean") || method.equals("euclidienne")) {
+            timeTaken = Profiler.analyse(() -> breakKeyEuclidean(image));
             bestKey = breakKeyEuclidean(image);
-        } 
+        }
         else {
             System.err.println("Méthode inconnue: " + method);
             System.err.println("Utilisez 'pearson' ou 'euclidean'");
@@ -269,16 +254,14 @@ public class keyBreak {
             return;
         }
 
-        long endTime = System.currentTimeMillis();
-
         System.out.println("\n=== RÉSULTAT FINAL ===");
         System.out.println("Meilleure clé trouvée: " + bestKey);
-        System.out.println("Temps d'exécution: " + (endTime - startTime) + " ms");
+        System.out.println("Temps d'exécution: " + String.format("%.3f", timeTaken * 1000) + " ms");
 
         int height = image.getHeight();
         int[] perm = generatePermutation(height, bestKey);
         BufferedImage unscrambledImage = unScrambleLines(image, perm);
-        
+
         String outputPath = "unscrambled_" + method + "_key" + bestKey + ".png";
         ImageIO.write(unscrambledImage, "png", new File(outputPath));
         System.out.println("Image débrouillée sauvegardée: " + outputPath);

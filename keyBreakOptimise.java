@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-public class keyBreakOptimized {
+public class keyBreakOptimise {
 
     // Convertit une image RGB en niveaux de gris
     public static int[][] rgb2gl(BufferedImage inputRGB) {
@@ -238,6 +238,10 @@ public class keyBreakOptimized {
         int finalKey = result[2];
 
         System.out.println("\nTemps d'execution: " + (endTime - startTime) + " ms");
+
+
+        double timeTaken = Profiler.analyse(() -> breakKeyOptimized(image));
+        System.out.println("\nTemps d'exécution: " + String.format("%.3f", timeTaken * 1000) + " ms");
 
         // Sauvegarde de l'image débrouillée
         int height = image.getHeight();
