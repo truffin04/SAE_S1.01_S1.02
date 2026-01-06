@@ -42,7 +42,7 @@ public class keyBreak {
         double sumY = 0;
         double sumXY = 0;
         double sumX2 = 0;
-        double sumY2 = 0;
+        double sumY2 = 0;   
         int n = line1.length;
 
         for (int i = 0; i < n; i++) {
