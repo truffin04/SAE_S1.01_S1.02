@@ -213,7 +213,7 @@ public class keyBreakOptimise {
 
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
-            System.err.println("Usage: java keyBreakOptimized <image_brouillee>");
+            System.err.println("Usage: java keyBreakOptimise <image_brouillee>");
             System.exit(1);
         }
 
